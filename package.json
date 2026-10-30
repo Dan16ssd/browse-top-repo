@@ -7,7 +7,7 @@
     "btr": "bin/btr.js"
   },
   "scripts": {
-    "test": "node --test test/*.test.js",
+    "test": "node --test",
     "bench": "node bench/run.js"
   },
   "engines": {
