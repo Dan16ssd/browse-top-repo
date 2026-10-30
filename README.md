@@ -1,4 +1,6 @@
-# browse-top-repo (`btr`)
+<p align="center"><img src="docs/logo.svg" width="112" alt="btr logo: a magnifying glass over a star"></p>
+<h1 align="center">browse-top-repo (<code>btr</code>)</h1>
+<p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ja.md">日本語</a> · <a href="README.es.md">Español</a></p>
 
 Before an agent starts a task, `btr` searches GitHub for agent skills (`SKILL.md`) that fit the task,
 ranks the top repos, scans them for unsafe content, and installs the winner into Claude Code, Codex,
@@ -32,12 +34,30 @@ btr list
 btr remove security-audit
 ```
 
+Write the task in English: `btr` matches English keywords, and almost all skills on GitHub are written in English.
+
+### In Claude Code: `/btr`
+
+`btr self-install` also adds a `/btr` slash command to Claude Code:
+
+```text
+/btr make an animated explainer video with remotion   # plan, show the top 3, ask, install
+/btr list
+/btr update                                           # shows what changed, asks before updating
+/btr remove remotion-best-practices
+```
+
+Claude runs the plan, shows the top picks with their scores and findings, and installs only after you say yes.
+
 ## How a task picks its skills
 
 1. **Classify** the task into domains (reverse-engineering, security, mobile, frontend, backend, devops,
    data, ml, testing, documents) by keyword; edit `DOMAINS` in `src/plan.js` to add more.
 2. **Discover** candidates with GitHub repo search (`<domain> claude skill`, `<domain> agent skills`) and,
-   when authenticated, code search for `filename:SKILL.md <domain>`.
+   when authenticated, code search for `filename:SKILL.md <domain>`. Words that look like a tool name
+   (`remotion`, `ghidra`, `playwright`) get their own searches, and `btr` also checks the tool's own
+   GitHub org, so official skills like `remotion-dev/skills` are found even when their description
+   never names the tool.
 3. **Shortlist** by stars + description match, then **evaluate** the top `--top` (default 8) by reading
    their file tree and `SKILL.md` frontmatter.
 4. **Score** 0-100:
@@ -49,7 +69,8 @@ btr remove security-audit
    | skills | 20 | has SKILL.md, and how many have `name` + `description` |
    | freshness | 15 | halves every 180 days since last push |
    | health | 10 | license, not archived, open issues vs stars |
-   | penalties | | -40 high-severity content, -10 medium, -5 per trust flag (e.g. 2k+ stars in under 90 days, almost no forks) |
+   | official | +10 | published by the tool's own org (e.g. `remotion-dev` for a Remotion task) |
+   | penalties | | -40 high-severity content, -10 medium, -5 per trust flag (e.g. 2k+ stars in under 90 days, almost no forks), -15 wrong platform |
 
 5. In multi-skill repos only the skills relevant to the task are suggested.
 
@@ -107,7 +128,9 @@ top pick was a good fit for 6 tasks, acceptable for 1, and off-target for 3:
 - Weak on broad tasks where a popular repo with a loosely related skill wins: Kubernetes deploy picked
   `kubeshark`, PDF missed `anthropics/skills`, iOS picked a mobile testing tool. Check `btr plan` output
   before `btr auto` for these.
-- Average 8.5 s per plan (longer when GitHub's search rate limit kicks in; `btr` waits it out).
+- A plan takes 3-6 s. Running many in a row hits GitHub's search rate limit (30/min); `btr` waits it out,
+  so the 10-task run averaged 12.4 s.
+- Naming the tool helps: "... using remotion" finds the official `remotion-dev/skills` and ranks it first.
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/benchmark-dark.png">

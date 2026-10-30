@@ -95,3 +95,13 @@ test('agents.json overrides add new agents', () => {
   fs.mkdirSync(path.join(home, '.cursor'));
   assert.deepEqual(resolveTargets(undefined, 'user').map((t) => t.agent).sort(), ['claude', 'cursor']);
 });
+
+test('self-install adds the skill and the /btr command for Claude Code', async () => {
+  const { execFileSync } = await import('node:child_process');
+  const bin = path.resolve('bin/btr.js');
+  execFileSync(process.execPath, [bin, 'self-install', '--agent', 'claude'], { env: { ...process.env } });
+  assert.ok(fs.existsSync(path.join(home, '.claude/skills/browse-top-repo/SKILL.md')));
+  const cmd = fs.readFileSync(path.join(home, '.claude/commands/btr.md'), 'utf8');
+  assert.match(cmd, /\$ARGUMENTS/);
+  assert.ok(!cmd.includes('{{BTR}}') && cmd.includes('bin/btr.js'));
+});

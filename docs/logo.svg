@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128" width="128" height="128" role="img" aria-label="btr logo">
+  <rect width="128" height="128" rx="28" fill="#10161d"/>
+  <circle cx="56" cy="56" r="31" fill="none" stroke="#f08a43" stroke-width="10"/>
+  <path d="M79 79 L104 104" stroke="#f08a43" stroke-width="13" stroke-linecap="round"/>
+  <polygon points="56.0,39.0 60.2,50.2 72.2,50.7 62.8,58.2 66.0,69.8 56.0,63.2 46.0,69.8 49.2,58.2 39.8,50.7 51.8,50.2" fill="#e4e9ee"/>
+</svg>

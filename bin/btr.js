@@ -22,7 +22,7 @@ Usage:
   btr list                     Show installed skills
   btr remove <name>            Uninstall a skill
   btr agents                   Show supported agents and where skills go
-  btr self-install             Install the browse-top-repo skill so agents use btr on their own
+  btr self-install             Install the browse-top-repo skill (and /btr in Claude Code)
 
 Options:
   --agent <a,b>    claude, codex, gemini, opencode, agents (default: detected agents)
@@ -75,7 +75,7 @@ function printRanking(result) {
   out(`Domains: ${result.domains.join(', ') || '(none matched, using task keywords)'}   candidates found: ${result.considered}\n`);
   out(`${pad('#', 3)}${pad('score', 7)}${pad('stars', 8)}${pad('repo', 52)}${pad('skills', 7)}notes`);
   result.results.forEach((r, i) => {
-    const notes = [...r.penalties.filter(([w]) => w.startsWith("built for")).map(([w]) => w), ...r.flags, ...r.findings.map((f) => `${f.severity}: ${f.msg}`)];
+    const notes = [...r.penalties.filter(([w]) => w.startsWith('built for') || w.startsWith('official')).map(([w]) => w.replace(/:.*/, '')), ...r.flags, ...r.findings.map((f) => `${f.severity}: ${f.msg}`)];
     if (!r.skills.length) notes.unshift('no SKILL.md');
     out(`${pad(i + 1, 3)}${pad(r.score, 7)}${pad(fmtStars(r.stars), 8)}${pad(r.repo, 52)}${pad(r.skills.length, 7)}${notes.join('; ')}`);
   });
@@ -216,6 +216,15 @@ async function main() {
         const dest = path.join(t.path, 'browse-top-repo');
         fs.cpSync(src, dest, { recursive: true, force: true });
         out(`installed browse-top-repo -> ${dest}`);
+        // Claude Code also gets a /btr slash command next to its skills folder.
+        if (t.agent === 'claude') {
+          const btr = `node "${fileURLToPath(import.meta.url).split(path.sep).join('/')}"`;
+          const tpl = fs.readFileSync(path.join(src, '..', 'commands', 'btr.md'), 'utf8');
+          const cmdFile = path.join(path.dirname(t.path), 'commands', 'btr.md');
+          fs.mkdirSync(path.dirname(cmdFile), { recursive: true });
+          fs.writeFileSync(cmdFile, tpl.replaceAll('{{BTR}}', btr));
+          out(`installed /btr command -> ${cmdFile}`);
+        }
       }
       return;
     }

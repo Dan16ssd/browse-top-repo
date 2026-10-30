@@ -56,9 +56,11 @@ export function computeScore({ repo, skills, taskTerms, findings, now = Date.now
   if (want.length && has.length && !want.some((p) => has.includes(p))) penalties.push([`built for ${has.join('/')}, not ${want.join('/')}`, -15]);
   const flags = trustFlags(repo, now).filter((f) => f !== 'no license'); // license already in health
   if (flags.length) penalties.push(['trust signals', -5 * flags.length]);
+  // Skills published by the maker of the tool the task names (remotion-dev for "remotion").
+  if (repo.official) penalties.push(["official: from the tool's own org", 10]);
   for (const [, p] of penalties) score += p;
 
-  return { score: Math.max(0, Math.round(score)), parts, penalties, skillRel };
+  return { score: Math.min(100, Math.max(0, Math.round(score))), parts, penalties, skillRel };
 }
 
 // repoOrName: a search result object or "owner/repo". maxSkillsRead caps raw fetches.

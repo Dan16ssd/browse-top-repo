@@ -110,6 +110,11 @@ export async function searchRepos(query, perPage = 15) {
   return r.items;
 }
 
+export async function searchUsers(query, perPage = 5) {
+  const r = await gh(`/search/users?q=${encodeURIComponent(query)}&per_page=${perPage}`);
+  return r.items;
+}
+
 // Code search requires authentication; returns [] without a token.
 export async function searchCode(query, perPage = 30) {
   if (!getToken()) return [];

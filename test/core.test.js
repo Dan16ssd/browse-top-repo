@@ -2,7 +2,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { findSkills, parseFrontmatter, safeName } from '../src/skills.js';
 import { scanFiles, hasHigh } from '../src/scan.js';
-import { classify } from '../src/plan.js';
+import { classify, namedTerms, buildQueries } from '../src/plan.js';
 import { computeScore, trustFlags, terms } from '../src/evaluate.js';
 import { parseRepoSpec } from '../src/github.js';
 
@@ -87,6 +87,8 @@ test('score rewards relevance and penalises unsafe content', () => {
   const t = terms('reverse engineering decompile');
   const clean = computeScore({ repo, skills, taskTerms: t, findings: [], now });
   const unsafe = computeScore({ repo, skills, taskTerms: t, findings: [{ severity: 'high' }], now });
+  const official = computeScore({ repo: { ...repo, official: true }, skills, taskTerms: t, findings: [], now });
+  assert.ok(official.score > clean.score || official.score === 100);
   const offTopic = computeScore({ repo: { ...repo, full_name: 'x/y', description: 'cooking' }, skills: [{ name: 'c', meta: {} }], taskTerms: t, findings: [], now });
   assert.ok(clean.score > 80);
   assert.equal(clean.score - unsafe.score, 40);
@@ -97,4 +99,13 @@ test('trustFlags spots star farming', () => {
   const now = Date.parse('2026-10-31');
   const flags = trustFlags({ stargazers_count: 9000, forks_count: 20, created_at: '2026-10-01', license: null }, now);
   assert.equal(flags.length, 3);
+});
+
+test('tool names in the task get their own searches', () => {
+  assert.deepEqual(namedTerms('make an animated explainer video with captions using remotion'), ['remotion']);
+  assert.deepEqual(namedTerms('decompile a windows binary with ghidra'), ['ghidra']);
+  assert.deepEqual(namedTerms('security audit of my web app'), []);
+  const q = buildQueries('make an animated explainer video with captions using remotion', []);
+  assert.equal(q.repoQueries[0], 'remotion skill');
+  assert.deepEqual(q.codeQueries, ['filename:SKILL.md remotion']);
 });
