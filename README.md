@@ -11,7 +11,7 @@ Zero dependencies; Node 18+.
   <img alt="btr: skill scout for coding agents" src="docs/images/hero-light.png">
 </picture>
 
-**Video review (1 min 47 s, narrated, subtitled):** [docs/btr-review.mp4](docs/btr-review.mp4) · subtitles: [docs/btr-review.srt](docs/btr-review.srt)
+**Video review (1 min 47 s, narrated, subtitled):** [16:9](docs/btr-review.mp4) · [9:16 for TikTok / Reels / Shorts](docs/btr-review-vertical.mp4) · subtitles: [docs/btr-review.srt](docs/btr-review.srt)
 
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/images/demo-dark.png">
@@ -125,7 +125,8 @@ generated with edge-tts, and faster-whisper transcribes it so subtitles are time
 ```sh
 cd video && npm install
 npm run voice    # narration.json -> narration.mp3, timeline, word captions, .srt
-npm run render   # -> out/btr-review.mp4
+npm run render   # -> out/btr-review.mp4 (1920x1080)
+npm run render:vertical  # -> out/btr-review-vertical.mp4 (1080x1920, captions clear of app UI)
 ```
 
 ## Tests

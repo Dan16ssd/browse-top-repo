@@ -5,7 +5,8 @@
   "scripts": {
     "voice": "python scripts/voice.py",
     "studio": "remotion studio src/index.ts",
-    "render": "remotion render src/index.ts BtrReview out/btr-review.mp4"
+    "render": "remotion render src/index.ts BtrReview out/btr-review.mp4",
+    "render:vertical": "remotion render src/index.ts BtrReviewVertical out/btr-review-vertical.mp4"
   },
   "dependencies": {
     "@remotion/captions": "^4.0.300",
