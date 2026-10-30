@@ -1,0 +1,163 @@
+1
+00:00:00,000 --> 00:00:03,120
+This is btr, a skill scout for coding agents.
+
+2
+00:00:03,660 --> 00:00:05,120
+Before your agent starts a task,
+
+3
+00:00:05,540 --> 00:00:07,340
+it finds the best skill for the job on
+
+4
+00:00:07,340 --> 00:00:08,960
+GitHub and installs it.
+
+5
+00:00:10,080 --> 00:00:12,020
+There are thousands of agent skills on GitHub.
+
+6
+00:00:12,640 --> 00:00:14,260
+Some are excellent, some are abandoned,
+
+7
+00:00:14,720 --> 00:00:17,060
+and some will quietly tell your agent to read
+
+8
+00:00:17,060 --> 00:00:18,660
+your private SSH key.
+
+9
+00:00:19,800 --> 00:00:21,940
+So btr works in six steps.
+
+10
+00:00:22,460 --> 00:00:24,920
+It classifies your task, searches GitHub,
+
+11
+00:00:25,300 --> 00:00:28,260
+shortlists the top repos, scores each one out of
+
+12
+00:00:28,260 --> 00:00:31,280
+a hundred, scans every file for unsafe instructions,
+
+13
+00:00:31,740 --> 00:00:33,720
+and then installs the winner into Claude Code,
+
+14
+00:00:34,580 --> 00:00:37,060
+Codex, Gemini CLI, or OpenCode.
+
+15
+00:00:38,260 --> 00:00:40,660
+Here it is on a real task: reverse engineering
+
+16
+00:00:40,660 --> 00:00:41,720
+an Android app.
+
+17
+00:00:42,260 --> 00:00:44,820
+64 candidates found, eight evaluated,
+
+18
+00:00:45,220 --> 00:00:47,280
+and a clear winner in about three seconds.
+
+19
+00:00:47,800 --> 00:00:50,160
+It even flags a repo that gained 9,000
+
+20
+00:00:50,160 --> 00:00:51,600
+stars in a single month.
+
+21
+00:00:52,780 --> 00:00:55,060
+The score blends popularity, relevance,
+
+22
+00:00:55,660 --> 00:00:58,300
+skill quality, freshness, and repo health.
+
+23
+00:00:58,780 --> 00:01:01,160
+Then it subtracts penalties for unsafe content,
+
+24
+00:01:01,660 --> 00:01:04,240
+suspicious stars, or a skill built for the wrong
+
+25
+00:01:04,240 --> 00:01:04,700
+platform.
+
+26
+00:01:05,840 --> 00:01:08,280
+In testing, the scanner caught a skill that sends
+
+27
+00:01:08,280 --> 00:01:10,040
+your SSH key to an API,
+
+28
+00:01:10,540 --> 00:01:13,040
+and another that pipes a remote script straight into
+
+29
+00:01:13,040 --> 00:01:13,260
+bash.
+
+30
+00:01:13,920 --> 00:01:17,100
+Early false alarms on legitimate security skills were found
+
+31
+00:01:17,100 --> 00:01:17,640
+and fixed.
+
+32
+00:01:19,040 --> 00:01:19,910
+Now the honest part.
+
+33
+00:01:19,910 --> 00:01:23,160
+Across 10 live tasks, six top picks were strong,
+
+34
+00:01:23,580 --> 00:01:25,540
+one was acceptable, and three missed.
+
+35
+00:01:26,140 --> 00:01:28,700
+It shines on specialist work like security and reverse
+
+36
+00:01:28,700 --> 00:01:31,720
+engineering, but broad tasks still need better ranking.
+
+37
+00:01:33,340 --> 00:01:36,740
+Install, update, and safety are solid with 20 passing
+
+38
+00:01:36,740 --> 00:01:37,240
+tests.
+
+39
+00:01:37,800 --> 00:01:40,880
+My verdict: ready for GitHub as an early release.
+
+40
+00:01:41,520 --> 00:01:44,880
+Run btr self-install, and let your agent choose its
+
+41
+00:01:44,880 --> 00:01:45,400
+own tools.

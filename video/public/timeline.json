@@ -1,0 +1,45 @@
+{
+  "total": 106.568,
+  "scenes": [
+    {
+      "id": "title",
+      "start": 0.0,
+      "duration": 9.94
+    },
+    {
+      "id": "problem",
+      "start": 9.94,
+      "duration": 9.772
+    },
+    {
+      "id": "pipeline",
+      "start": 19.712,
+      "duration": 18.484
+    },
+    {
+      "id": "demo",
+      "start": 38.196,
+      "duration": 14.5
+    },
+    {
+      "id": "scoring",
+      "start": 52.696,
+      "duration": 13.108
+    },
+    {
+      "id": "scanner",
+      "start": 65.804,
+      "duration": 13.012
+    },
+    {
+      "id": "benchmark",
+      "start": 78.816,
+      "duration": 13.972
+    },
+    {
+      "id": "verdict",
+      "start": 92.788,
+      "duration": 13.78
+    }
+  ]
+}

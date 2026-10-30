@@ -1,0 +1,24 @@
+{
+  "voice": "en-US-AndrewMultilingualNeural",
+  "rate": "+4%",
+  "gapSeconds": 0.7,
+  "captionFixes": {
+    "in a Claude code,": "into Claude Code,",
+    "in a Claude Code,": "into Claude Code,",
+    "skill build": "skill built",
+    "Run Bt, our self install,": "Run btr self-install,",
+    "task, reverse": "task: reverse",
+    "part, across": "part. Across",
+    "verdict, ready": "verdict: ready"
+  },
+  "scenes": [
+    { "id": "title", "text": "This is b t r, a skill scout for coding agents. Before your agent starts a task, it finds the best skill for the job on GitHub, and installs it." },
+    { "id": "problem", "text": "There are thousands of agent skills on GitHub. Some are excellent. Some are abandoned. And some will quietly tell your agent to read your private SSH key." },
+    { "id": "pipeline", "text": "So b t r works in six steps. It classifies your task, searches GitHub, shortlists the top repos, scores each one out of a hundred, scans every file for unsafe instructions, and then installs the winner into Claude Code, Codex, Gemini CLI, or OpenCode." },
+    { "id": "demo", "text": "Here it is on a real task: reverse engineering an Android app. Sixty-four candidates found, eight evaluated, and a clear winner in about three seconds. It even flags a repo that gained nine thousand stars in a single month." },
+    { "id": "scoring", "text": "The score blends popularity, relevance, skill quality, freshness, and repo health. Then it subtracts penalties for unsafe content, suspicious stars, or a skill built for the wrong platform." },
+    { "id": "scanner", "text": "In testing, the scanner caught a skill that sends your SSH key to an API, and another that pipes a remote script straight into bash. Early false alarms on legitimate security skills were found and fixed." },
+    { "id": "benchmark", "text": "Now the honest part. Across ten live tasks, six top picks were strong, one was acceptable, and three missed. It shines on specialist work like security and reverse engineering, but broad tasks still need better ranking." },
+    { "id": "verdict", "text": "Install, update, and safety are solid, with twenty passing tests. My verdict: ready for GitHub as an early release. Run b t r self-install, and let your agent choose its own tools." }
+  ]
+}
