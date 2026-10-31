@@ -146,17 +146,6 @@ primera opción fue buena en 6 tareas, aceptable en 1 y desacertada en 3:
 Limitaciones conocidas: los servidores MCP (p. ej. REA) se descubren pero no se registran; las rutas de skills
 de Codex/Gemini/OpenCode son estimaciones y se pueden sobrescribir en `~/.btr/agents.json`.
 
-## Vídeo
-
-`video/` es un proyecto de [Remotion](https://www.remotion.dev) que genera el vídeo de reseña. La voz se crea
-con edge-tts y faster-whisper la transcribe para que los subtítulos coincidan con lo que se dice.
-
-```sh
-cd video && npm install
-npm run voice            # narration.json -> narration.mp3, línea de tiempo, subtítulos por palabra, .srt
-npm run render           # -> out/btr-review.mp4 (1920x1080)
-npm run render:vertical  # -> out/btr-review-vertical.mp4 (1080x1920, subtítulos fuera de la interfaz de la app)
-```
 
 ## Tests
 

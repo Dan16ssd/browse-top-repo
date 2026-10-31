@@ -140,17 +140,6 @@ top pick was a good fit for 6 tasks, acceptable for 1, and off-target for 3:
 Known gaps: MCP servers (e.g. REA) are discovered but not registered; Codex/Gemini/OpenCode skill paths
 are best guesses and can be overridden in `~/.btr/agents.json`.
 
-## Video
-
-`video/` is a [Remotion](https://www.remotion.dev) project that renders the review video. The voice is
-generated with edge-tts, and faster-whisper transcribes it so subtitles are timed to the actual speech.
-
-```sh
-cd video && npm install
-npm run voice    # narration.json -> narration.mp3, timeline, word captions, .srt
-npm run render   # -> out/btr-review.mp4 (1920x1080)
-npm run render:vertical  # -> out/btr-review-vertical.mp4 (1080x1920, captions clear of app UI)
-```
 
 ## Tests
 

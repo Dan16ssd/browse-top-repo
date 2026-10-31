@@ -143,17 +143,6 @@ Claude が plan を実行し、上位候補をスコアとスキャン結果つ�
 既知の課題：MCP サーバー（REA など）は見つけられますが登録はしません。Codex/Gemini/OpenCode の
 スキルのパスは推測で、`~/.btr/agents.json` で上書きできます。
 
-## 動画
-
-`video/` はレビュー動画をレンダリングする [Remotion](https://www.remotion.dev) プロジェクトです。
-音声は edge-tts で生成し、faster-whisper で書き起こして字幕を実際の発話に合わせています。
-
-```sh
-cd video && npm install
-npm run voice            # narration.json -> narration.mp3、タイムライン、単語ごとの字幕、.srt
-npm run render           # -> out/btr-review.mp4（1920x1080）
-npm run render:vertical  # -> out/btr-review-vertical.mp4（1080x1920、字幕はアプリの UI を避けて配置）
-```
 
 ## テスト
 

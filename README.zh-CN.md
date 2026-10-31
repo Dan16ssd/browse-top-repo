@@ -136,17 +136,6 @@ Claude 会执行规划，展示得分最高的候选及其分数和扫描结果�
 已知不足：MCP 服务器（例如 REA）能被发现但不会被注册；Codex/Gemini/OpenCode 的技能路径是最佳猜测，
 可在 `~/.btr/agents.json` 中覆盖。
 
-## 视频
-
-`video/` 是一个渲染评测视频的 [Remotion](https://www.remotion.dev) 项目。配音由 edge-tts 生成，
-faster-whisper 会转写配音，让字幕与实际语音对齐。
-
-```sh
-cd video && npm install
-npm run voice            # narration.json -> narration.mp3、时间轴、逐词字幕、.srt
-npm run render           # -> out/btr-review.mp4（1920x1080）
-npm run render:vertical  # -> out/btr-review-vertical.mp4（1080x1920，字幕避开应用界面）
-```
 
 ## 测试
 
