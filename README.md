@@ -1,6 +1,6 @@
 <p align="center"><img src="docs/logo.svg" width="112" alt="btr logo: a magnifying glass over a star"></p>
 <h1 align="center">browse-top-repo (<code>btr</code>)</h1>
-<p align="center"><b>English</b> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ja.md">日本語</a> · <a href="README.es.md">Español</a></p>
+<p align="center"><a href="https://dan16ssd.github.io/browse-top-repo/"><b>Website</b></a> · <b>English</b> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ja.md">日本語</a> · <a href="README.es.md">Español</a></p>
 
 Before an agent starts a task, `btr` searches GitHub for agent skills (`SKILL.md`) that fit the task,
 ranks the top repos, scans them for unsafe content, and installs the winner into Claude Code, Codex,
@@ -21,7 +21,7 @@ Zero dependencies; Node 18+.
 </picture>
 
 ```sh
-npm link                      # makes `btr` available globally (or run node bin/btr.js)
+npm install -g github:Dan16ssd/browse-top-repo   # or, from a clone: npm link
 btr self-install              # teach your agents to use btr before starting work
 
 btr plan "reverse engineer an android apk"

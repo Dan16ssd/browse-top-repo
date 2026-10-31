@@ -1,6 +1,6 @@
 <p align="center"><img src="docs/logo.svg" width="112" alt="Logo de btr: una lupa sobre una estrella"></p>
 <h1 align="center">browse-top-repo (<code>btr</code>)</h1>
-<p align="center"><a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ja.md">日本語</a> · <b>Español</b></p>
+<p align="center"><a href="https://dan16ssd.github.io/browse-top-repo/"><b>Sitio web</b></a> · <a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a> · <a href="README.ja.md">日本語</a> · <b>Español</b></p>
 
 Antes de que un agente empiece una tarea, `btr` busca en GitHub skills de agente (`SKILL.md`) que encajen con
 la tarea, puntúa los mejores repositorios, los analiza en busca de contenido peligroso e instala el ganador en

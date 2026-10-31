@@ -1,0 +1,20 @@
+# browse-top-repo (btr)
+
+> btr is a free, open-source (MIT) Node.js CLI that searches GitHub for SKILL.md agent skills that fit a task, ranks the top repositories (popularity, relevance, skill quality, freshness, repo health, official-org bonus, minus penalties for unsafe content, star farming or wrong platform), scans every file for unsafe instructions, and installs the best match into Claude Code, OpenAI Codex, Gemini CLI, OpenCode or ~/.agents/skills. `btr update` keeps installed skills current. In Claude Code it adds a /btr slash command.
+
+Install: `npm install -g github:Dan16ssd/browse-top-repo && btr self-install` (Node.js 18+, no dependencies).
+
+Main commands: `btr plan "<task>"`, `btr eval <owner/repo> "<task>"`, `btr install <owner/repo> [--skill name]`, `btr auto "<task>"`, `btr update [--check]`, `btr list`, `btr remove <skill>`, `btr self-install`.
+
+Status: early release v0.1. On a 10-task live benchmark the top pick was a good fit for 6 tasks, acceptable for 1 and wrong for 3 (broad tasks: Kubernetes, PDF, iOS).
+
+## Docs
+
+- [README](https://github.com/Dan16ssd/browse-top-repo/blob/main/README.md): usage, scoring, safety scanner, agent paths, benchmark
+- [Agent skill used by btr itself](https://github.com/Dan16ssd/browse-top-repo/blob/main/skills/browse-top-repo/SKILL.md)
+- [/btr command for Claude Code](https://github.com/Dan16ssd/browse-top-repo/blob/main/skills/commands/btr.md)
+
+## Optional
+
+- [Review video (1 min 47 s)](https://dan16ssd.github.io/browse-top-repo/btr-review.mp4) and [subtitles](https://dan16ssd.github.io/browse-top-repo/btr-review.srt)
+- [README in Simplified Chinese](https://github.com/Dan16ssd/browse-top-repo/blob/main/README.zh-CN.md), [Japanese](https://github.com/Dan16ssd/browse-top-repo/blob/main/README.ja.md), [Spanish](https://github.com/Dan16ssd/browse-top-repo/blob/main/README.es.md)

@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://dan16ssd.github.io/browse-top-repo/sitemap.xml

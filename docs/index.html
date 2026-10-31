@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>btr: find and install the best agent skills for Claude Code, Codex and Gemini CLI</title>
+<meta name="description" content="btr is a free, open-source CLI that searches GitHub for SKILL.md agent skills, ranks the top repos, scans them for unsafe instructions, and installs the best one into Claude Code, Codex, Gemini CLI or OpenCode.">
+<meta name="keywords" content="agent skills, SKILL.md, Claude Code skills, Claude skills, Codex skills, Gemini CLI skills, OpenCode, AI coding agent, skill installer, CLI">
+<meta name="author" content="Dan16ssd">
+<meta name="robots" content="index, follow, max-image-preview:large, max-video-preview:-1">
+<link rel="canonical" href="https://dan16ssd.github.io/browse-top-repo/">
+<link rel="icon" href="logo.svg" type="image/svg+xml">
+<meta name="theme-color" content="#10161d">
+
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="browse-top-repo (btr)">
+<meta property="og:title" content="btr: skill scout for coding agents">
+<meta property="og:description" content="Finds the best GitHub agent skill for your task, checks it is safe, and installs it into Claude Code, Codex, Gemini CLI or OpenCode.">
+<meta property="og:url" content="https://dan16ssd.github.io/browse-top-repo/">
+<meta property="og:image" content="https://dan16ssd.github.io/browse-top-repo/images/social-preview.png">
+<meta property="og:image:width" content="1280">
+<meta property="og:image:height" content="640">
+<meta property="og:image:alt" content="btr: skill scout for coding agents">
+<meta property="og:video" content="https://dan16ssd.github.io/browse-top-repo/btr-review.mp4">
+<meta property="og:video:type" content="video/mp4">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="btr: skill scout for coding agents">
+<meta name="twitter:description" content="Finds the best GitHub agent skill for your task, checks it is safe, and installs it into Claude Code, Codex, Gemini CLI or OpenCode.">
+<meta name="twitter:image" content="https://dan16ssd.github.io/browse-top-repo/images/social-preview.png">
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "SoftwareApplication",
+      "name": "browse-top-repo (btr)",
+      "alternateName": "btr",
+      "description": "A command-line tool that searches GitHub for SKILL.md agent skills, ranks the top repositories, scans them for unsafe instructions, and installs the best match into Claude Code, Codex, Gemini CLI or OpenCode.",
+      "applicationCategory": "DeveloperApplication",
+      "operatingSystem": "Windows, macOS, Linux",
+      "softwareVersion": "0.1.0",
+      "softwareRequirements": "Node.js 18 or later",
+      "license": "https://opensource.org/licenses/MIT",
+      "url": "https://dan16ssd.github.io/browse-top-repo/",
+      "downloadUrl": "https://github.com/Dan16ssd/browse-top-repo",
+      "codeRepository": "https://github.com/Dan16ssd/browse-top-repo",
+      "image": "https://dan16ssd.github.io/browse-top-repo/images/social-preview.png",
+      "author": { "@type": "Person", "name": "Dan16ssd", "url": "https://github.com/Dan16ssd" },
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" }
+    },
+    {
+      "@type": "VideoObject",
+      "name": "btr review: a skill scout for coding agents",
+      "description": "A narrated walkthrough of btr: how it ranks GitHub agent skills, what its safety scanner caught, and its benchmark on 10 live tasks.",
+      "thumbnailUrl": "https://dan16ssd.github.io/browse-top-repo/images/video-poster.jpg",
+      "contentUrl": "https://dan16ssd.github.io/browse-top-repo/btr-review.mp4",
+      "uploadDate": "2026-10-31",
+      "duration": "PT1M47S",
+      "inLanguage": "en"
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "What is an agent skill?",
+          "acceptedAnswer": { "@type": "Answer", "text": "An agent skill is a folder with a SKILL.md file (instructions plus optional scripts) that coding agents such as Claude Code, Codex and Gemini CLI load to get better at a specific kind of task, for example reverse engineering or security audits." } },
+        { "@type": "Question", "name": "Which coding agents does btr install skills into?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Claude Code, OpenAI Codex, Gemini CLI, OpenCode and the shared ~/.agents/skills folder. Other agents can be added in ~/.btr/agents.json." } },
+        { "@type": "Question", "name": "Is it safe to install skills found on GitHub?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Skills run with your permissions, so btr scans every downloaded file for download-and-execute commands, credential theft, prompt injection and similar patterns, blocks high-severity findings, and asks before installing. The scanner is a heuristic, so review anything you do not recognise." } },
+        { "@type": "Question", "name": "How does btr choose the best skill?",
+          "acceptedAnswer": { "@type": "Answer", "text": "It scores each candidate repo from 0 to 100 on popularity, relevance to your task, SKILL.md quality, freshness and repo health, adds 10 points for skills published by the tool's own organisation, and subtracts points for unsafe content, suspicious star growth or the wrong platform." } },
+        { "@type": "Question", "name": "Is btr free?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Yes. btr is open source under the MIT license and has no dependencies beyond Node.js 18 or later." } }
+      ]
+    }
+  ]
+}
+</script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,750&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a field report. Narrow reading column, wide evidence blocks (terminal, tables) that break out of it. */
+:root {
+  --paper: #eef1f4; --sheet: #f9fafb; --ink: #16202b; --muted: #566372; --rule: #cfd6de;
+  --accent: #c2570c; --accent-soft: #f6e3d4; --term-bg: #18222d; --term-fg: #d7dee6; --term-dim: #7e8b99;
+  --good: #1d7a4c; --good-soft: #dcefe4; --warn: #9a6a00; --warn-soft: #f5ebcf; --bad: #b3261e; --bad-soft: #f6dcda;
+  --display: "Bricolage Grotesque", "Segoe UI", system-ui, sans-serif;
+  --body: "IBM Plex Sans", "Segoe UI", system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "Cascadia Mono", Consolas, monospace;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #10161d; --sheet: #161e27; --ink: #e4e9ee; --muted: #93a0ae; --rule: #2a3542;
+    --accent: #f08a43; --accent-soft: #3a2616; --term-bg: #0b1016; --term-fg: #d7dee6; --term-dim: #6f7c8a;
+    --good: #5cc48e; --good-soft: #15301f; --warn: #e0b54a; --warn-soft: #33290f; --bad: #f0807a; --bad-soft: #3a1918;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --paper: #10161d; --sheet: #161e27; --ink: #e4e9ee; --muted: #93a0ae; --rule: #2a3542;
+  --accent: #f08a43; --accent-soft: #3a2616; --term-bg: #0b1016; --term-fg: #d7dee6; --term-dim: #6f7c8a;
+  --good: #5cc48e; --good-soft: #15301f; --warn: #e0b54a; --warn-soft: #33290f; --bad: #f0807a; --bad-soft: #3a1918;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 400 16px/1.6 var(--body); padding-inline: 16px; }
+main { max-width: 980px; margin: 0 auto; padding-block: 24px 80px; display: grid; grid-template-columns: minmax(0, 1fr); gap: 72px; }
+nav.top { max-width: 980px; margin: 0 auto; padding-top: 20px; display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+nav.top .brand { display: flex; align-items: center; gap: 10px; font: 750 1.1rem var(--display); color: var(--ink); text-decoration: none; }
+nav.top .links { display: flex; gap: 16px; flex-wrap: wrap; font-size: 0.9rem; }
+.col { max-width: 680px; }
+h1, h2, h3 { font-family: var(--display); text-wrap: balance; margin: 0; line-height: 1.1; }
+h1 { font-size: clamp(2.4rem, 7vw, 4.4rem); font-weight: 750; letter-spacing: -0.02em; }
+h1 .cmd { font-family: var(--mono); font-weight: 500; font-size: 0.42em; color: var(--accent); letter-spacing: 0; display: block; margin-bottom: 14px; overflow-wrap: anywhere; }
+h2 { font-size: clamp(1.6rem, 3.6vw, 2.2rem); font-weight: 750; letter-spacing: -0.01em; }
+p { margin: 0; }
+.lede { font-size: 1.2rem; color: var(--muted); margin-top: 18px; max-width: 62ch; }
+.eyebrow { font: 500 0.75rem/1 var(--mono); letter-spacing: 0.12em; text-transform: uppercase; color: var(--accent); margin-bottom: 12px; }
+section { display: grid; gap: 22px; min-width: 0; }
+section > p, .col p { max-width: 65ch; }
+code, .mono { font-family: var(--mono); font-size: 0.9em; }
+:not(pre) > code { background: var(--sheet); border: 1px solid var(--rule); padding: 1px 6px; border-radius: 4px; overflow-wrap: anywhere; }
+a { color: var(--accent); }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.install { display: grid; grid-template-columns: minmax(0, 1fr); gap: 10px; margin-top: 28px; max-width: 680px; }
+.install .row { display: flex; gap: 10px; align-items: stretch; flex-wrap: wrap; }
+.install .row code { flex: 1 1 260px; min-width: 0; background: var(--term-bg); color: var(--term-fg); border: 0; padding: 10px 14px; border-radius: 6px; font-size: 0.92rem; overflow-x: auto; white-space: nowrap; }
+.install button, .btn { font: 500 0.85rem var(--body); background: transparent; color: var(--ink); border: 1px solid var(--rule); border-radius: 6px; padding: 9px 14px; cursor: pointer; text-decoration: none; display: inline-flex; align-items: center; }
+.install button:hover, .btn:hover { border-color: var(--accent); color: var(--accent); }
+.install small { color: var(--muted); }
+.cta { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px; }
+.btn.primary { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+.btn.primary:hover { background: var(--accent); border-color: var(--accent); color: #fff; }
+
+video { width: 100%; height: auto; border-radius: 10px; background: #000; display: block; }
+.video-alt { font-size: 0.9rem; color: var(--muted); }
+
+.stats { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 1px; background: var(--rule); border: 1px solid var(--rule); border-radius: 8px; overflow: hidden; }
+.stat { background: var(--sheet); padding: 18px 18px 16px; display: grid; gap: 4px; }
+.stat b { font: 750 2rem/1 var(--display); font-variant-numeric: tabular-nums; }
+.stat span { font-size: 0.85rem; color: var(--muted); }
+@media (max-width: 640px) { .stats { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+.pipeline { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); counter-reset: step; }
+.pipeline li { counter-increment: step; padding: 14px 14px 14px 0; border-top: 2px solid var(--ink); display: grid; gap: 6px; align-content: start; min-width: 0; }
+.pipeline li::before { content: counter(step); font: 500 0.75rem var(--mono); color: var(--accent); }
+.pipeline li strong { font: 600 1rem var(--display); }
+.pipeline li span { font-size: 0.85rem; color: var(--muted); }
+@media (max-width: 760px) { .pipeline { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 16px; } }
+
+.terminal { background: var(--term-bg); color: var(--term-fg); border-radius: 10px; overflow: hidden; min-width: 0; }
+.terminal .bar { display: flex; gap: 6px; padding: 10px 14px; border-bottom: 1px solid #ffffff14; align-items: center; }
+.terminal .bar i { width: 10px; height: 10px; border-radius: 50%; background: #ffffff22; }
+.terminal .bar span { margin-left: 8px; font: 400 0.75rem var(--mono); color: var(--term-dim); }
+.terminal pre { margin: 0; padding: 18px 20px; overflow-x: auto; font: 400 0.8rem/1.6 var(--mono); }
+.t-dim { color: var(--term-dim); } .t-acc { color: #f5a86b; } .t-ok { color: #7fd4a4; } .t-warn { color: #eac46a; } .t-bad { color: #f2938c; }
+.tabs { display: flex; flex-wrap: wrap; gap: 8px; }
+.tabs button { font: 500 0.85rem var(--mono); background: var(--sheet); color: var(--muted); border: 1px solid var(--rule); border-radius: 999px; padding: 6px 14px; cursor: pointer; }
+.tabs button[aria-selected="true"] { background: var(--ink); color: var(--paper); border-color: var(--ink); }
+
+.table-wrap { overflow-x: auto; border: 1px solid var(--rule); border-radius: 8px; background: var(--sheet); }
+table { border-collapse: collapse; width: 100%; min-width: 720px; font-size: 0.9rem; }
+th, td { text-align: left; padding: 11px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+th { font: 500 0.72rem var(--mono); letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); background: var(--paper); }
+tr:last-child td { border-bottom: 0; }
+td.num, th.num { font-variant-numeric: tabular-nums; text-align: right; white-space: nowrap; }
+td .repo { font-family: var(--mono); font-size: 0.85em; }
+td small { display: block; color: var(--muted); margin-top: 2px; }
+.pill { display: inline-block; font: 600 0.72rem var(--body); padding: 3px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.good { background: var(--good-soft); color: var(--good); }
+.pill.warn { background: var(--warn-soft); color: var(--warn); }
+.pill.bad { background: var(--bad-soft); color: var(--bad); }
+
+.weights { display: grid; gap: 10px; margin: 0; }
+.wrow { display: grid; grid-template-columns: 110px 1fr 48px; gap: 12px; align-items: center; font-size: 0.9rem; }
+.wrow dt { margin: 0; } .wrow dd { margin: 0; }
+.wrow .track { height: 14px; background: var(--sheet); border: 1px solid var(--rule); border-radius: 3px; overflow: hidden; }
+.wrow .fill { height: 100%; background: var(--ink); }
+.wrow.neg .fill { background: var(--bad); }
+.wrow.bonus .fill { background: var(--good); }
+.wrow b { font: 500 0.85rem var(--mono); text-align: right; font-variant-numeric: tabular-nums; }
+
+.split { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px; }
+@media (max-width: 760px) { .split { grid-template-columns: 1fr; } }
+.card { background: var(--sheet); border: 1px solid var(--rule); border-radius: 8px; padding: 20px; display: grid; gap: 12px; align-content: start; min-width: 0; }
+.card h3 { font-size: 1.15rem; }
+.finding { display: grid; gap: 4px; padding-top: 12px; border-top: 1px solid var(--rule); }
+.finding:first-of-type { border-top: 0; padding-top: 0; }
+.finding .mono { font-size: 0.78rem; color: var(--muted); overflow-wrap: anywhere; }
+.finding p { font-size: 0.9rem; }
+
+.agents { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: 8px; }
+.agents li { font: 500 0.85rem var(--mono); background: var(--sheet); border: 1px solid var(--rule); border-radius: 6px; padding: 6px 12px; }
+
+.faq { display: grid; gap: 0; border-top: 1px solid var(--rule); }
+.faq details { border-bottom: 1px solid var(--rule); padding: 14px 0; }
+.faq summary { cursor: pointer; font: 600 1.05rem var(--display); }
+.faq details p { margin-top: 10px; color: var(--muted); max-width: 70ch; }
+
+footer { max-width: 980px; margin: 0 auto; color: var(--muted); font-size: 0.85rem; border-top: 1px solid var(--rule); padding: 20px 0 40px; display: flex; flex-wrap: wrap; gap: 8px 20px; justify-content: space-between; }
+@media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
+</style>
+</head>
+<body>
+<nav class="top" aria-label="Site">
+  <a class="brand" href="./"><img src="logo.svg" width="32" height="32" alt="">btr</a>
+  <div class="links">
+    <a href="#how-it-works">How it works</a>
+    <a href="#benchmark">Benchmark</a>
+    <a href="#safety">Safety</a>
+    <a href="#faq">FAQ</a>
+    <a href="https://github.com/Dan16ssd/browse-top-repo">GitHub</a>
+  </div>
+</nav>
+
+<main>
+  <header class="col">
+    <h1><span class="cmd">$ btr plan "reverse engineer an android apk"</span>Skill scout for coding agents</h1>
+    <p class="lede">Before your agent starts a task, <strong>btr</strong> searches GitHub for <code>SKILL.md</code> agent skills, ranks the top repos, scans them for unsafe instructions, and installs the winner into Claude Code, Codex, Gemini CLI or OpenCode. <code>btr update</code> keeps them current. Free, open source, zero dependencies.</p>
+    <div class="install">
+      <div class="row">
+        <code id="install-cmd">npm install -g github:Dan16ssd/browse-top-repo &amp;&amp; btr self-install</code>
+        <button type="button" id="copy">Copy</button>
+      </div>
+      <small>Needs Node.js 18+. <code>self-install</code> teaches your agents to use btr and adds <code>/btr</code> to Claude Code.</small>
+      <div class="cta">
+        <a class="btn primary" href="https://github.com/Dan16ssd/browse-top-repo">View on GitHub</a>
+        <a class="btn" href="#video">Watch the 2-minute review</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="stats" aria-label="At a glance">
+    <div class="stat"><b>6–7/10</b><span>live tasks where the top pick was a good fit, judged by hand</span></div>
+    <div class="stat"><b>3–6 s</b><span>per plan against live GitHub</span></div>
+    <div class="stat"><b>22</b><span>tests, CI on Windows, macOS and Linux</span></div>
+    <div class="stat"><b>0</b><span>dependencies; Node 18+ only</span></div>
+  </div>
+
+  <section id="video" aria-labelledby="video-h">
+    <div class="eyebrow">Video review</div>
+    <h2 id="video-h">btr in under two minutes</h2>
+    <video controls preload="none" playsinline poster="images/video-poster.jpg" width="1920" height="1080">
+      <source src="btr-review.mp4" type="video/mp4">
+      <track kind="subtitles" src="btr-review.vtt" srclang="en" label="English" default>
+    </video>
+    <p class="video-alt">Narrated, with subtitles. Also available as a <a href="btr-review-vertical.mp4">9:16 vertical cut</a> for TikTok, Reels and Shorts, and as <a href="btr-review.srt">an .srt subtitle file</a>.</p>
+  </section>
+
+  <section id="how-it-works" aria-labelledby="how-h">
+    <div class="eyebrow">How it works</div>
+    <h2 id="how-h">From a task description to installed skills</h2>
+    <ol class="pipeline">
+      <li><strong>Classify</strong><span>Map the task to domains such as reverse engineering or security</span></li>
+      <li><strong>Search</strong><span>GitHub repo search, code search for <code>filename:SKILL.md</code>, and the tool's own org</span></li>
+      <li><strong>Shortlist</strong><span>Rank on stars and description match, keep the top 8</span></li>
+      <li><strong>Evaluate</strong><span>Read each file tree and SKILL.md frontmatter, then score 0–100</span></li>
+      <li><strong>Scan</strong><span>Check every file for download-and-run, secret theft and prompt injection</span></li>
+      <li><strong>Install</strong><span>Copy into each agent's skills folder and record the commit in a lockfile</span></li>
+    </ol>
+    <p>Works with these agents, and any other you add in <code>~/.btr/agents.json</code>:</p>
+    <ul class="agents">
+      <li>Claude Code</li><li>OpenAI Codex</li><li>Gemini CLI</li><li>OpenCode</li><li>~/.agents/skills</li>
+    </ul>
+  </section>
+
+  <section aria-labelledby="out-h">
+    <div class="eyebrow">Live runs</div>
+    <h2 id="out-h">What it prints</h2>
+    <p>Real output captured on 31 October 2026, trimmed only for width. The <code>/btr</code> tab shows an example Claude Code exchange built from a real plan.</p>
+    <div class="tabs" role="tablist" aria-label="Command output" hidden>
+      <button type="button" role="tab" id="tab-plan" aria-selected="true" aria-controls="term-plan">plan</button>
+      <button type="button" role="tab" id="tab-install" aria-selected="false" aria-controls="term-install">install</button>
+      <button type="button" role="tab" id="tab-update" aria-selected="false" aria-controls="term-update">update</button>
+      <button type="button" role="tab" id="tab-slash" aria-selected="false" aria-controls="term-slash">/btr</button>
+    </div>
+    <div class="terminal" id="term-plan" role="tabpanel" aria-labelledby="tab-plan">
+      <div class="bar"><i></i><i></i><i></i><span>btr plan</span></div>
+<pre><span class="t-acc">$ btr plan "reverse engineer an android apk"</span>
+Task: reverse engineer an android apk
+Domains: reverse-engineering, mobile   candidates found: 64
+
+<span class="t-dim">#  score  stars   repo                                              skills notes</span>
+1  <span class="t-ok">94</span>     8.6k    SimoneAvogadro/android-reverse-engineering-skill  1
+2  85     10.2k   mobile-next/mobile-mcp                            1
+3  81     43.8k   zhaoxuya520/reverse-skill                         89
+4  80     959     alexgaoth/awesome-reverse-engineered              1
+5  77     13.9k   OrchestratorInc/agent-orchestrator                13
+6  75     225     index-login/MobileRE-Skill                        6
+7  73     1.9k    yetone/native-feel-skill                          1
+8  72     9.2k    rehan-remade/universal-modder                     39     <span class="t-warn">9241 stars in 31 days: check for star farming</span>
+
+Best: SimoneAvogadro/android-reverse-engineering-skill
+  - android-reverse-engineering: Decompile Android APK, XAPK, JAR, and AAR files using jadx…
+
+Install: <span class="t-acc">btr install SimoneAvogadro/android-reverse-engineering-skill</span></pre>
+    </div>
+    <div class="terminal" id="term-install" role="tabpanel" aria-labelledby="tab-install">
+      <div class="bar"><i></i><i></i><i></i><span>btr install</span></div>
+<pre><span class="t-acc">$ btr install cloudflare/security-audit-skill</span>
+cloudflare/security-audit-skill@c1c8a8c -> claude (~/.claude/skills), codex (~/.codex/skills)
+  security-audit  20 files  <span class="t-ok">clean</span>
+  Note: skills are instructions and scripts your agent will follow. Review anything you do not recognise.
+Install? [y/N] y
+  installed security-audit -> ~/.claude/skills/security-audit
+  installed security-audit -> ~/.codex/skills/security-audit
+
+<span class="t-acc">$ btr install RainLib/OfficeCLI-rust</span>
+  officecli-pdf  6 files
+    <span class="t-bad">high: downloads and pipes into a shell (skills/officecli-pdf/SKILL.md:12)</span>
+  skipped officecli-pdf: high-severity safety findings (use --force to override)</pre>
+    </div>
+    <div class="terminal" id="term-update" role="tabpanel" aria-labelledby="tab-update">
+      <div class="bar"><i></i><i></i><i></i><span>btr update</span></div>
+<pre><span class="t-acc">$ btr update --check</span>
+  security-audit (cloudflare/security-audit-skill, user): 0000000 -> c1c8a8c
+  pdf (anthropics/skills, user): up to date
+
+<span class="t-acc">$ btr update</span>
+  updated security-audit -> ~/.claude/skills/security-audit
+  updated security-audit -> ~/.codex/skills/security-audit
+
+<span class="t-acc">$ btr list</span>
+security-audit   cloudflare/security-audit-skill@c1c8a8c   user  claude,codex
+pdf              anthropics/skills@ca45fc4                 user  claude</pre>
+    </div>
+    <div class="terminal" id="term-slash" role="tabpanel" aria-labelledby="tab-slash">
+      <div class="bar"><i></i><i></i><i></i><span>Claude Code</span></div>
+<pre><span class="t-acc">&gt; /btr make an animated explainer video with captions using remotion</span>
+
+<span class="t-dim">#  score  stars   repo                              notes</span>
+1  <span class="t-ok">87</span>     5.9k    remotion-dev/skills               official; no license
+2  86     15.1k   Vincentwei1021/video-shotcraft
+3  82     2.0k    Vincentwei1021/video-talkcraft
+
+I recommend remotion-dev/skills, the official skills from the Remotion team.
+I'd install remotion-best-practices, remotion-captions and remotion-create (0 findings).
+Install them for this project?</pre>
+    </div>
+  </section>
+
+  <section id="benchmark" aria-labelledby="bench-h">
+    <div class="eyebrow">Benchmark</div>
+    <h2 id="bench-h">Ten tasks against live GitHub</h2>
+    <p>Each task ran <code>btr plan</code> with default settings on 31 October 2026, and every top pick was reviewed by hand: 6 good fits, 1 acceptable, 3 wrong. btr is strong on specialist tasks and weaker on broad ones, where a popular but loosely related repo can win.</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th scope="col">Task</th><th scope="col">Top pick</th><th scope="col" class="num">Score</th><th scope="col" class="num">Stars</th><th scope="col">Verdict</th></tr></thead>
+        <tbody>
+          <tr><td>reverse engineer an android apk</td><td><span class="repo">SimoneAvogadro/android-reverse-engineering-skill</span><small>Exact fit</small></td><td class="num">94</td><td class="num">8.6k</td><td><span class="pill good">Good</span></td></tr>
+          <tr><td>decompile a windows binary with ghidra</td><td><span class="repo">ljagiello/ctf-skills</span><small>Reverse-engineering section of a CTF pack</small></td><td class="num">82</td><td class="num">3.6k</td><td><span class="pill warn">Acceptable</span></td></tr>
+          <tr><td>security audit of a node.js web app</td><td><span class="repo">cloudflare/security-audit-skill</span><small>Exact fit</small></td><td class="num">85</td><td class="num">54.1k</td><td><span class="pill good">Good</span></td></tr>
+          <tr><td>solve a ctf pwn challenge</td><td><span class="repo">ljagiello/ctf-skills</span><small>Exact fit</small></td><td class="num">92</td><td class="num">3.6k</td><td><span class="pill good">Good</span></td></tr>
+          <tr><td>build a react landing page with tailwind</td><td><span class="repo">nextlevelbuilder/ui-ux-pro-max-skill</span><small>UI and UX design skill</small></td><td class="num">93</td><td class="num">143k</td><td><span class="pill good">Good</span></td></tr>
+          <tr><td>write playwright e2e tests</td><td><span class="repo">lackeyjb/playwright-skill</span><small>Exact fit</small></td><td class="num">89</td><td class="num">3.3k</td><td><span class="pill good">Good</span></td></tr>
+          <tr><td>deploy a docker app to kubernetes</td><td><span class="repo">gotempsh/temps</span><small>A hosting platform, not a deploy skill</small></td><td class="num">80</td><td class="num">882</td><td><span class="pill bad">Wrong</span></td></tr>
+          <tr><td>fill and merge pdf documents</td><td><span class="repo">ndpvt-web/latex-document-skill</span><small>Missed the pdf skill in anthropics/skills</small></td><td class="num">79</td><td class="num">805</td><td><span class="pill bad">Wrong</span></td></tr>
+          <tr><td>analyze a csv dataset with pandas</td><td><span class="repo">saineshnakra/automated-data-analyst</span><small>Reasonable fit</small></td><td class="num">74</td><td class="num">34</td><td><span class="pill good">Good</span></td></tr>
+          <tr><td>build an ios app in swift</td><td><span class="repo">ParthJadhav/app-store-screenshots</span><small>App Store screenshots, not app building</small></td><td class="num">89</td><td class="num">7.7k</td><td><span class="pill bad">Wrong</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>Naming the tool helps: "... using remotion" finds the official <code>remotion-dev/skills</code> and ranks it first.</p>
+  </section>
+
+  <section aria-labelledby="score-h">
+    <div class="eyebrow">Scoring</div>
+    <h2 id="score-h">How a repo earns its score</h2>
+    <div class="split">
+      <dl class="weights">
+        <div class="wrow"><dt>popularity</dt><dd class="track"><div class="fill" style="width:75%"></div></dd><b>+30</b></div>
+        <div class="wrow"><dt>relevance</dt><dd class="track"><div class="fill" style="width:62.5%"></div></dd><b>+25</b></div>
+        <div class="wrow"><dt>skills</dt><dd class="track"><div class="fill" style="width:50%"></div></dd><b>+20</b></div>
+        <div class="wrow"><dt>freshness</dt><dd class="track"><div class="fill" style="width:37.5%"></div></dd><b>+15</b></div>
+        <div class="wrow"><dt>health</dt><dd class="track"><div class="fill" style="width:25%"></div></dd><b>+10</b></div>
+        <div class="wrow bonus"><dt>official</dt><dd class="track"><div class="fill" style="width:25%"></div></dd><b>+10</b></div>
+        <div class="wrow neg"><dt>unsafe</dt><dd class="track"><div class="fill" style="width:100%"></div></dd><b>-40</b></div>
+        <div class="wrow neg"><dt>platform</dt><dd class="track"><div class="fill" style="width:37.5%"></div></dd><b>-15</b></div>
+        <div class="wrow neg"><dt>trust flag</dt><dd class="track"><div class="fill" style="width:12.5%"></div></dd><b>-5</b></div>
+      </dl>
+      <div class="col">
+        <p>Popularity is logarithmic, so 50k stars is not ten times better than 5k. Relevance counts your own words more heavily than generic domain words, and tool names you mention count most. A platform mismatch costs 15 points, so an Android-only skill does not win a Windows task.</p>
+        <p style="margin-top:12px">Skills published by the tool's own GitHub organisation get 10 extra points. Trust flags catch repos that gained thousands of stars in a few weeks or have almost no forks.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="safety" aria-labelledby="safety-h">
+    <div class="eyebrow">Safety scanner</div>
+    <h2 id="safety-h">Blocking the right skills</h2>
+    <p>A skill is a set of instructions your agent follows with your permissions. Before anything is written, btr scans every file for download-and-execute commands, encoded payloads, credential theft, prompt injection, disabled safety flags, token exfiltration, persistence and bundled binaries. High-severity findings block the install unless you pass <code>--force</code>, and updates are scanned again.</p>
+    <div class="split">
+      <div class="card">
+        <h3>Blocked, correctly</h3>
+        <div class="finding"><span class="pill bad">secret-read</span><span class="mono">kubesphere/kubesphere · SKILL.md:689</span><p>Tells the agent to <code>cat ~/.ssh/id_rsa</code> and embed the private key in an API request body.</p></div>
+        <div class="finding"><span class="pill bad">pipe-to-shell</span><span class="mono">RainLib/OfficeCLI-rust · 12 skills</span><p>Has the agent run <code>curl … install.sh | bash</code> from a remote branch.</p></div>
+        <div class="finding"><span class="pill bad">prompt-injection</span><span class="mono">foryourhealth111-pixel/Vibe-Skills · SKILL.md:122</span><p>Tells the agent to continue “without asking the user for a separate approval first”.</p></div>
+      </div>
+      <div class="card">
+        <h3>False alarms that were fixed</h3>
+        <div class="finding"><span class="pill good">now allowed</span><span class="mono">ljagiello/ctf-skills · ctf-ai-ml/SKILL.md:77</span><p>A sample payload <code>"Ignore previous instructions…"</code> inside a curl body, used to test an AI challenge.</p></div>
+        <div class="finding"><span class="pill good">now allowed</span><span class="mono">ljagiello/ctf-skills · ctf-forensics/SKILL.md:269</span><p>Forensics notes on decrypting Chrome's <code>Login Data</code> file.</p></div>
+        <div class="finding"><span class="pill good">now allowed</span><span class="mono">P4nda0s/reverse-skills · rev-frida/SKILL.md:260</span><p>“Do not tell the user to hook <code>.init</code> blindly” is advice to the agent, not deception.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="faq" aria-labelledby="faq-h">
+    <div class="eyebrow">FAQ</div>
+    <h2 id="faq-h">Questions</h2>
+    <div class="faq">
+      <details open><summary>What is an agent skill?</summary><p>An agent skill is a folder with a <code>SKILL.md</code> file (instructions plus optional scripts) that coding agents such as Claude Code, Codex and Gemini CLI load to get better at a specific kind of task, for example reverse engineering or security audits.</p></details>
+      <details><summary>Which coding agents does btr install skills into?</summary><p>Claude Code, OpenAI Codex, Gemini CLI, OpenCode and the shared <code>~/.agents/skills</code> folder. Other agents can be added in <code>~/.btr/agents.json</code>.</p></details>
+      <details><summary>Is it safe to install skills found on GitHub?</summary><p>Skills run with your permissions, so btr scans every downloaded file, blocks high-severity findings, and asks before installing. The scanner is a heuristic, so review anything you do not recognise.</p></details>
+      <details><summary>How does btr choose the best skill?</summary><p>It scores each candidate repo from 0 to 100 on popularity, relevance to your task, SKILL.md quality, freshness and repo health, adds 10 points for skills from the tool's own organisation, and subtracts points for unsafe content, suspicious star growth or the wrong platform.</p></details>
+      <details><summary>Can I use it from inside Claude Code?</summary><p>Yes. After <code>btr self-install</code>, type <code>/btr</code> followed by your task. Claude shows the top picks with their scores and findings and installs only after you agree.</p></details>
+      <details><summary>Is btr free?</summary><p>Yes. It is open source under the MIT license and needs only Node.js 18 or later.</p></details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <span>browse-top-repo (btr) · MIT license · <a href="https://github.com/Dan16ssd/browse-top-repo">GitHub</a></span>
+  <span>README: <a href="https://github.com/Dan16ssd/browse-top-repo#readme" hreflang="en">English</a> · <a href="https://github.com/Dan16ssd/browse-top-repo/blob/main/README.zh-CN.md" hreflang="zh-CN">简体中文</a> · <a href="https://github.com/Dan16ssd/browse-top-repo/blob/main/README.ja.md" hreflang="ja">日本語</a> · <a href="https://github.com/Dan16ssd/browse-top-repo/blob/main/README.es.md" hreflang="es">Español</a></span>
+</footer>
+
+<script>
+// Without JavaScript every terminal panel is shown; with it, they become tabs.
+const panels = ['plan', 'install', 'update', 'slash'];
+const tablist = document.querySelector('.tabs');
+tablist.hidden = false;
+function show(name) {
+  for (const k of panels) {
+    document.getElementById('term-' + k).hidden = k !== name;
+    document.getElementById('tab-' + k).setAttribute('aria-selected', String(k === name));
+  }
+}
+for (const k of panels) document.getElementById('tab-' + k).addEventListener('click', () => show(k));
+show('plan');
+
+document.getElementById('copy').addEventListener('click', async (e) => {
+  const text = document.getElementById('install-cmd').textContent;
+  try { await navigator.clipboard.writeText(text); e.target.textContent = 'Copied'; }
+  catch { const r = document.createRange(); r.selectNodeContents(document.getElementById('install-cmd')); getSelection().removeAllRanges(); getSelection().addRange(r); e.target.textContent = 'Selected'; }
+  setTimeout(() => (e.target.textContent = 'Copy'), 1600);
+});
+</script>
+</body>
+</html>

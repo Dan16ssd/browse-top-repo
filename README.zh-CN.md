@@ -1,6 +1,6 @@
 <p align="center"><img src="docs/logo.svg" width="112" alt="btr 标志：放大镜下的一颗星"></p>
 <h1 align="center">browse-top-repo (<code>btr</code>)</h1>
-<p align="center"><a href="README.md">English</a> · <b>简体中文</b> · <a href="README.ja.md">日本語</a> · <a href="README.es.md">Español</a></p>
+<p align="center"><a href="https://dan16ssd.github.io/browse-top-repo/"><b>网站</b></a> · <a href="README.md">English</a> · <b>简体中文</b> · <a href="README.ja.md">日本語</a> · <a href="README.es.md">Español</a></p>
 
 在智能体开始任务之前，`btr` 会在 GitHub 上搜索适合该任务的智能体技能（`SKILL.md`），给排名靠前的仓库打分，
 扫描其中的不安全内容，然后把最佳结果安装到 Claude Code、Codex、Gemini CLI、OpenCode 或共享的

@@ -1,7 +1,7 @@
 {
   "name": "browse-top-repo",
   "version": "0.1.0",
-  "description": "Find, evaluate and install the best GitHub agent skills for a task into Claude Code, Codex, Gemini CLI and other coding agents.",
+  "description": "Find, rank, safety-scan and install the best GitHub agent skills (SKILL.md) for a task into Claude Code, Codex, Gemini CLI and OpenCode.",
   "type": "module",
   "bin": {
     "btr": "bin/btr.js"
@@ -16,12 +16,20 @@
   "license": "MIT",
   "keywords": [
     "claude-code",
+    "claude-skills",
     "agent-skills",
+    "skill-md",
     "skills",
     "codex",
     "gemini-cli",
+    "opencode",
+    "ai-agents",
+    "coding-agent",
+    "llm",
     "cli",
-    "github"
+    "github",
+    "security-scanner",
+    "developer-tools"
   ],
   "files": [
     "bin",
@@ -33,5 +41,9 @@
   "repository": {
     "type": "git",
     "url": "https://github.com/Dan16ssd/browse-top-repo"
+  },
+  "homepage": "https://dan16ssd.github.io/browse-top-repo/",
+  "bugs": {
+    "url": "https://github.com/Dan16ssd/browse-top-repo/issues"
   }
 }

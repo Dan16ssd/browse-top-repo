@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:video="http://www.google.com/schemas/sitemap-video/1.1">
+  <url>
+    <loc>https://dan16ssd.github.io/browse-top-repo/</loc>
+    <lastmod>2026-10-31</lastmod>
+    <video:video>
+      <video:thumbnail_loc>https://dan16ssd.github.io/browse-top-repo/images/video-poster.jpg</video:thumbnail_loc>
+      <video:title>btr review: a skill scout for coding agents</video:title>
+      <video:description>A narrated walkthrough of btr: how it ranks GitHub agent skills, what its safety scanner caught, and its benchmark on 10 live tasks.</video:description>
+      <video:content_loc>https://dan16ssd.github.io/browse-top-repo/btr-review.mp4</video:content_loc>
+      <video:duration>107</video:duration>
+    </video:video>
+  </url>
+</urlset>

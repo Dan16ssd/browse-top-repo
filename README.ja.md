@@ -1,6 +1,6 @@
 <p align="center"><img src="docs/logo.svg" width="112" alt="btr ロゴ：星を照らす虫めがね"></p>
 <h1 align="center">browse-top-repo (<code>btr</code>)</h1>
-<p align="center"><a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a> · <b>日本語</b> · <a href="README.es.md">Español</a></p>
+<p align="center"><a href="https://dan16ssd.github.io/browse-top-repo/"><b>ウェブサイト</b></a> · <a href="README.md">English</a> · <a href="README.zh-CN.md">简体中文</a> · <b>日本語</b> · <a href="README.es.md">Español</a></p>
 
 エージェントがタスクを始める前に、`btr` はそのタスクに合うエージェントスキル（`SKILL.md`）を GitHub で探し、
 上位のリポジトリを採点し、危険な内容がないかスキャンしてから、最適なものを Claude Code、Codex、Gemini CLI、
